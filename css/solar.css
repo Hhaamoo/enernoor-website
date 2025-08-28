@@ -1,0 +1,9 @@
+/* css/solar.css */
+body { overflow: hidden; }
+.stars { position: fixed; width: 100vw; height: 100vh; z-index: 0; pointer-events: none; }
+.solar-system { position: relative; width: 100vw; height: 100vh; display: flex; justify-content: center; align-items: center; z-index: 1; }
+.sun { position: absolute; left: 50%; top: 50%; width: 260px; height: 260px; margin-left: -130px; margin-top: -130px; border-radius: 50%; background: radial-gradient(circle, #a88d2b 60%, #7a5a13 100%); box-shadow: 0 0 50px 15px #a88d2b, 0 0 80px 25px #7a5a13; opacity: 0.7; display: flex; justify-content: center; align-items: center; font-size: 3.5rem; font-weight: bold; color: #fffde6; letter-spacing: 2px; border: 5px solid #fff7d6; z-index: 2; text-shadow: 0 0 12px #a88d2b, 0 0 5px #fff; transition: opacity 0.3s; }
+.planet { position: absolute; border-radius: 50%; box-shadow: 0 0 45px 10px rgba(0,0,0,0.35); transition: transform 0.2s; cursor: pointer; border: 2px solid #fff2; display: flex; justify-content: center; align-items: center; text-decoration: none; }
+.planet:hover { transform: scale(1.22); z-index: 3; box-shadow: 0 0 55px 18px #fff9; }
+.orbit { position: absolute; left: 50%; top: 50%; border: 1.7px dashed rgba(255,255,255,0.09); border-radius: 50%; transform: translate(-50%, -50%); pointer-events: none; }
+.planet-label { position: absolute; bottom: -36px; width: 120px; left: -30px; font-size: 1.25rem; color: #fff; text-align: center; text-shadow: 0 0 10px #000c; font-family: 'Cairo', sans-serif; font-weight: bold; pointer-events: none; }
