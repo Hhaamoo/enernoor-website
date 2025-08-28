@@ -1,57 +1,58 @@
-// server.js
+// server.js - الإصدار النهائي
 
 const express = require('express');
 const path = require('path');
-const fs = require('fs'); // 1. استدعاء أداة التعامل مع الملفات (fs)
+const fs = require('fs');
 const app = express();
-const PORT = 3000;
+const PORT = process.env.PORT || 3000; // Render يستخدم هذا السطر
 
 app.use(express.json());
 app.use(express.static(path.join(__dirname, '/')));
 
-// --- قاعدة البيانات ---
 const DB_FILE = path.join(__dirname, 'db.json');
 
-// --- الرادار الجديد: إرسال كل المواضيع المحفوظة إلى الموقع ---
+// --- إرسال كل المواضيع المحفوظة ---
 app.get('/api/topics', (req, res) => {
   fs.readFile(DB_FILE, 'utf8', (err, data) => {
-    if (err) {
-      return res.status(500).json({ message: 'خطأ في قراءة قاعدة البيانات' });
-    }
+    if (err) return res.status(500).json({ message: 'Error reading DB' });
     res.json(JSON.parse(data).topics);
   });
 });
 
-// --- رادار إضافة موضوع (النسخة المطورة) ---
+// --- إضافة موضوع جديد ---
 app.post('/api/topics', (req, res) => {
   const newTopic = {
-    id: Date.now(), // لإعطاء كل موضوع رقمًا مميزًا
+    id: Date.now(),
     title: req.body.title,
     content: req.body.content,
-    author: 'مستخدم', // يمكنك تطويرها لاحقًا
+    author: 'مستخدم',
     date: new Date().toISOString()
   };
-
   fs.readFile(DB_FILE, 'utf8', (err, data) => {
-    if (err) {
-      return res.status(500).json({ message: 'خطأ في قراءة قاعدة البيانات' });
-    }
+    if (err) return res.status(500).json({ message: 'Error reading DB' });
     const db = JSON.parse(data);
-    db.topics.unshift(newTopic); // إضافة الموضوع الجديد في بداية القائمة
-
+    db.topics.unshift(newTopic);
     fs.writeFile(DB_FILE, JSON.stringify(db, null, 2), (err) => {
-      if (err) {
-        return res.status(500).json({ message: 'خطأ في حفظ الموضوع' });
-      }
+      if (err) return res.status(500).json({ message: 'Error saving topic' });
       res.status(201).json(newTopic);
     });
   });
 });
 
+// --- القاعدة الرئيسية التي تعرض الصفحة الأولى ---
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'index.html'));
 });
 
+// === القاعدة الجديدة والمهمة التي تصلح كل شيء ===
+// هذه القاعدة تقول: "إذا طلب أي شخص صفحة داخل مجلد pages"
+// "اذهب وأعطه الملف الصحيح من هناك"
+app.get('/pages/:pageName', (req, res) => {
+    res.sendFile(path.join(__dirname, 'pages', req.params.pageName));
+});
+// === نهاية القاعدة الجديدة ===
+
+
 app.listen(PORT, () => {
-  console.log(`المحرك يعمل الآن! العنوان: http://localhost:${PORT}`);
+  console.log(`المحرك يعمل الآن على البوابة ${PORT}`);
 });
